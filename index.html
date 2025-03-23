@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Para sa baby ko</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .login-container, .choice-container, .message-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .profile-img, .message-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+            border: 2px solid #ccc;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .radio-group {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script>
+        function validateLogin(event) {
+            event.preventDefault();
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username === "kier" && password === "iloveyou") {
+                alert("Login successful! Welcome, baby ko.");
+                alert("sayo lang 2, bawal sa iba");
+
+                document.getElementById("login-container").classList.add("hidden");
+                document.getElementById("choice-container").classList.remove("hidden");
+
+                // Save login state
+                localStorage.setItem("loggedIn", "true");
+            } else {
+                alert("Baby, incorrect po ang username or password na nilagay mo. Please try again po.");
+            }
+        }
+        function goToMessage(event) {
+    event.preventDefault();
+    
+    var choice = document.querySelector('input[name="relationship"]:checked');
+    if (!choice) {
+        alert("Please select an option.");
+        return;
+    }
+
+    if (choice.value === "tropa") {
+        showNextMessage("aray");
+    } else if (choice.value === "cy") {
+        showNextMessage("ge");
+    } else if (choice.value === "baby") {
+        showNextMessage("ganon");
+    }
+}
+
+function showNextMessage(step) {
+    var message = "";
+    var imageSrc = "";
+    var extraButtons = "";
+    var audioSrc = ""; 
+
+    if (step === "aray") {
+        message = "Ayusin mo, sasamain ka sakin";
+        imageSrc = "sige.jpg";
+        extraButtons = `<button onclick="showNextMessage('ayusin')" class="btn">Wag naman po</button>`;
+    } else if (step === "ayusin") {
+        message = "Back mo na dahil hindi tayo tropa";
+        imageSrc = "sigesige.jpg";
+        extraButtons = `<button onclick="showNextMessage('continue')" class="btn">Continue</button>`;
+    } else if (step === "continue") {
+        message = "Sabi ko back na, tumuloy pa talaga";
+        imageSrc = "sigesigesige.jpg";
+    } else if (step === "ge") {
+        message = "Anong cy? tropa lang? back mo";
+        imageSrc = "oksi.jpg";
+        extraButtons = `<button onclick="showNextMessage('utot')" class="btn">Continue</button>`;
+    } else if (step === "utot") {
+        message = "Tigas talaga ng bungo, tinuloy pa";
+        imageSrc = "oksii.jpg";
+        extraButtons = `<button onclick="showNextMessage('tuloy')" class="btn">Continue</button>`;
+    } else if (step === "tuloy") {
+        message = "Tama na kakacontinue, makakaisa ka talaga";
+        imageSrc = "oksiii.jpg";
+    } else if (step === "ganon") {
+        message = "Baby mo talaga ko?";
+        imageSrc = "iossss.jpg";
+        extraButtons = `
+            <button onclick="showNextMessage('ano')" class="btn">Opo, baby kita</button>
+            <button onclick="showNextMessage('ano1')" class="btn">Hindi, sino ka ba?</button>
+        `;
+    } else if (step === "ano") {
+        message = "Naks naman, I love you. Dahil dyan meron kang .....";
+        imageSrc = "iosss.jpg";
+        extraButtons = `<button onclick="showNextMessage('naks')" class="btn">Ano?</button>`;
+    } else if (step === "naks") {
+        message = "Ang sakit ng likod ko, pano ba ang dapat na posture? Nakakandong ba sayo?";
+        imageSrc = "ioss.jpg";
+        audioSrc = "Para-Paraan.mp3";
+        extraButtons = `<button onclick="playAudio('${audioSrc}')" class="btn">Play Audio</button>`;
+        imageSrc = "iosssss.jpg";
+    } else if (step === "ano1") {
+        message = "Sakit mo, jojo amo :(";
+        imageSrc = "ios.jpg";
+        audioSrc = "Salamat_sa_pananakit_mo.mp3";
+        extraButtons = `<button onclick="playAudio('${audioSrc}')" class="btn">Play Audio</button>`;
+    }
+    
+
+    document.getElementById("message-text").innerHTML = message;
+    document.getElementById("message-img").src = imageSrc;
+    document.getElementById("extra-buttons").innerHTML = extraButtons;
+    
+    document.getElementById("message-img").classList.remove("hidden");
+    document.getElementById("choice-container").classList.add("hidden");
+    document.getElementById("message-container").classList.remove("hidden");
+    
+}
+var currentAudio = null; // Store the current playing audio
+
+function playAudio(audioSrc) {
+    if (audioSrc) {
+        if (currentAudio) {
+            stopAudio(); // Stop any playing audio before playing a new one
+        }
+        currentAudio = new Audio(audioSrc);
+        currentAudio.play();
+    }
+}
+
+function stopAudio() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+}
+
+function goBackToChoices() {
+    stopAudio(); // Stop audio before going back
+    document.getElementById("message-container").classList.add("hidden");
+    document.getElementById("choice-container").classList.remove("hidden");
+}
+
+       
+
+        window.onload = function () {
+            if (localStorage.removeItem("loggedIn") === "true") {
+                document.getElementById("login-container").classList.add("hidden");
+                document.getElementById("choice-container").classList.remove("hidden");
+            } else {
+                document.getElementById("login-container").classList.remove("hidden");
+                document.getElementById("choice-container").classList.add("hidden");
+                document.getElementById("message-container").classList.add("hidden");
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <!-- LOGIN FORM -->
+    <div id="login-container" class="login-container">
+        <img src="login.jpg" alt="Profile Picture" class="profile-img"> 
+        <h2>Login</h2>
+        <form onsubmit="validateLogin(event)">
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required />
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password (8 characters minimum):</label>
+                <input type="password" id="password" name="password" minlength="8" required />
+            </div>
+
+            <button type="submit" class="btn">Enter</button>
+        </form>
+    </div>
+
+
+    <!-- CHOICES -->
+    <div id="choice-container" class="choice-container hidden">
+        <p>Hi, mahal ko (⁠◜⁠‿⁠◝⁠)♡</p>
+        <form onsubmit="goToMessage(event)">
+            <label>Pili ka (dapat tama):</label>
+            <input type="text" id="fixed-text" value="Hello" disabled />
+            <div class="radio-group">
+                <label><input type="radio" name="relationship" value="tropa"> Tropa</label><br>
+                <label><input type="radio" name="relationship" value="cy"> Cy</label><br>
+                <label><input type="radio" name="relationship" value="baby"> Baby</label>
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+
+    <!-- MESSAGE DISPLAY -->
+    <div id="message-container" class="message-container hidden">
+        <img id="message-img" src="" alt="Message Image" class="message-img hidden">
+        <p id="message-text"></p>
+        <div id="extra-buttons"></div>
+        <button onclick="goBackToChoices()" class="btn">Back</button>
+    </div>
+
+</body>
+</html>
